@@ -1,0 +1,32 @@
+[project]
+name = "ampav-qwen3vl"
+version = "0.0.1"
+description = "Qwen3-VL tooling for the AMPAV environment"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+]
+authors = [
+    {name = "Ying Feng", email = "yingfeng@iu.edu"},
+]
+
+requires-python = ">=3.12"
+dependencies = [
+    "ampav-core>=0.0.20",
+]
+
+[project.urls]
+Homepage = "https://github.com/AMPAV/ampav-qwen3vl"
+Repository = "https://github.com/AMPAV/ampav-qwen3vl.git"
+Issues = "https://github.com/AMPAV/ampav-qwen3vl/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ampav*"]
+namespaces = true
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
