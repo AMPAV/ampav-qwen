@@ -101,8 +101,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dtype", default="bfloat16")
     parser.add_argument(
         "--attention-implementation",
-        default="sdpa",
-        choices=("flash_attention_2", "sdpa", "eager"),
+        default="auto",
+        choices=("auto", "flash_attention_2", "eager"),
     )
     parser.add_argument("--max-memory-per-gpu", default="22GiB")
     return parser.parse_args()
@@ -165,7 +165,11 @@ def main() -> None:
         args.model_id,
         revision=args.model_revision,
         dtype=args.dtype,
-        attention_implementation=args.attention_implementation,
+        attention_implementation=(
+            None
+            if args.attention_implementation == "auto"
+            else args.attention_implementation
+        ),
         model_load_options={"max_memory": max_memory},
     )
     model_load_seconds = time.perf_counter() - load_start

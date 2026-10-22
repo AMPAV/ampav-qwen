@@ -40,3 +40,6 @@ Run the unit tests:
 ```bash
 python -m unittest discover -s tests
 ```
+
+The default suite is model-free and does not require optional OpenVINO or model
+weights. Real OpenVINO and Transformers model probes are explicit manual runs.

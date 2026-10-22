@@ -39,7 +39,7 @@ class Qwen3OmniTransformers:
         revision: str | None = None,
         device_map: str | dict[str, Any] = "auto",
         dtype: str = "auto",
-        attention_implementation: str = "sdpa",
+        attention_implementation: str | None = None,
         model_load_options: dict[str, Any] | None = None,
         model: Any | None = None,
         processor: Any | None = None,
@@ -75,9 +75,10 @@ class Qwen3OmniTransformers:
                 "revision": revision,
                 "device_map": device_map,
                 "dtype": dtype,
-                "attn_implementation": attention_implementation,
                 **(model_load_options or {}),
             }
+            if attention_implementation is not None:
+                load_options["attn_implementation"] = attention_implementation
             model = Qwen3OmniMoeThinkerForConditionalGeneration.from_pretrained(
                 self.model_id,
                 **load_options,
