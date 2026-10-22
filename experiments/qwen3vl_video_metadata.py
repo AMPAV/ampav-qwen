@@ -17,8 +17,6 @@ from typing import Any
 
 import av
 import numpy as np
-from openvino import Core, Tensor, __version__ as openvino_version
-import openvino_genai
 import yaml
 
 from ampav.qwen.vl import Qwen3VLVideo
@@ -74,8 +72,11 @@ def read_sampled_video(
     sample_fps: float,
     max_frames: int | None,
     max_frame_pixels: int,
-) -> tuple[Tensor, openvino_genai.VideoMetadata, dict[str, Any]]:
+) -> tuple[Any, Any, dict[str, Any]]:
     """Decode selected frames and describe the effective native video tensor."""
+
+    from openvino import Tensor
+    import openvino_genai
 
     with av.open(path) as container:
         stream = container.streams.video[0]
@@ -187,7 +188,7 @@ def serialize_metrics(metrics: Any) -> dict[str, Any]:
     return output
 
 
-def serialize_result(result: openvino_genai.VLMDecodedResults) -> dict[str, Any]:
+def serialize_result(result: Any) -> dict[str, Any]:
     """Create a safe readable projection of the native decoded result."""
 
     return {
@@ -234,6 +235,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     """Run the real model once and retain native output plus run context."""
+
+    from openvino import Core, __version__ as openvino_version
+    import openvino_genai
 
     args = parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=False)

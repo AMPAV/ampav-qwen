@@ -22,6 +22,7 @@ dependencies = [
 
 [project.optional-dependencies]
 omni = [
+    "audioread>=3.0",
     "qwen-omni-utils[decord]>=0.0.8",
 ]
 openvino = [
