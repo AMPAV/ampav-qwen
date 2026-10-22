@@ -146,6 +146,16 @@ def main() -> None:
         if args.prompt_file is not None
         else DEFAULT_PROMPT
     )
+    (args.output_dir / "prompt.txt").write_text(prompt + "\n", encoding="utf-8")
+    (args.output_dir / "command.txt").write_text(
+        shlex.join([sys.executable, *sys.argv]) + "\n",
+        encoding="utf-8",
+    )
+    (args.output_dir / "input_ref.txt").write_text(
+        f"video: {args.video_path.resolve()}\n"
+        "cleanup: caller-owned input was not modified or deleted\n",
+        encoding="utf-8",
+    )
 
     started_at = datetime.now().astimezone()
     wall_start = time.perf_counter()
@@ -175,6 +185,7 @@ def main() -> None:
                 "fps": args.fps,
                 "total_pixels": args.total_pixels,
             },
+            processor_options={"cap_pixels_per_frame": True},
         )
         prepare_seconds = time.perf_counter() - prepare_start
         input_tokens = int(inputs["input_ids"].shape[-1])
@@ -217,6 +228,23 @@ def main() -> None:
                 for index in range(gpu_count)
             ],
         }
+        (args.output_dir / "native_output.partial.json").write_text(
+            json.dumps(
+                json_safe(
+                    {
+                        "native_type": (
+                            "transformers Qwen3OmniMoeThinker generation and decode"
+                        ),
+                        "completed_modes": list(results),
+                        "results": results,
+                    }
+                ),
+                indent=2,
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
 
     completed_at = datetime.now().astimezone()
     elapsed_seconds = time.perf_counter() - wall_start
@@ -266,6 +294,7 @@ def main() -> None:
             "max_memory": max_memory,
             "do_sample": False,
             "video_reader": os.environ["FORCE_QWENVL_VIDEO_READER"],
+            "cap_pixels_per_frame": True,
         },
         "resource": {
             "max_rss_before_kib": max_rss_before_kib,
@@ -279,16 +308,6 @@ def main() -> None:
     )
     (args.output_dir / "manifest.yaml").write_text(
         yaml.safe_dump(json_safe(manifest), sort_keys=False, allow_unicode=True),
-        encoding="utf-8",
-    )
-    (args.output_dir / "prompt.txt").write_text(prompt + "\n", encoding="utf-8")
-    (args.output_dir / "command.txt").write_text(
-        shlex.join([sys.executable, *sys.argv]) + "\n",
-        encoding="utf-8",
-    )
-    (args.output_dir / "input_ref.txt").write_text(
-        f"video: {args.video_path.resolve()}\n"
-        "cleanup: caller-owned input was not modified or deleted\n",
         encoding="utf-8",
     )
     (args.output_dir / "observations.md").write_text(
