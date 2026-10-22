@@ -36,7 +36,7 @@ class OmniExperimentTest(unittest.TestCase):
         self.assertEqual(args.modes, ["video-only", "audiovisual"])
         self.assertEqual(args.fps, 1.0)
         self.assertEqual(args.total_pixels, 4_194_304)
-        self.assertEqual(args.max_new_tokens, 512)
+        self.assertEqual(args.max_new_tokens, 256)
         self.assertEqual(args.attention_implementation, "sdpa")
 
 

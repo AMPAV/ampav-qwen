@@ -25,7 +25,7 @@ audible_evidence, audiovisual_events, subjects, themes, and limitations.
 Each evidence item must be concise and use source \"visual\", \"audio\", or
 \"both\". Report only evidence grounded in the supplied modalities. Do not infer
 identities or protected attributes. Do not claim audio evidence when no audio was
-supplied. Keep each array to at most 8 high-value items."""
+supplied. Keep each array to at most 4 high-value items."""
 
 MODES = {
     "video-only": False,
@@ -97,7 +97,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompt-file", type=Path)
     parser.add_argument("--fps", type=float, default=1.0)
     parser.add_argument("--total-pixels", type=int, default=4_194_304)
-    parser.add_argument("--max-new-tokens", type=int, default=512)
+    parser.add_argument("--max-new-tokens", type=int, default=256)
     parser.add_argument("--dtype", default="bfloat16")
     parser.add_argument(
         "--attention-implementation",
