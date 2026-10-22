@@ -23,6 +23,8 @@ import sys
 import time
 from typing import Any
 
+from ampav.qwen.vl import Qwen3VLTransformersVideo
+
 
 DEFAULT_MODEL_ID = "Qwen/Qwen3-VL-4B-Instruct"
 DEFAULT_MAX_TOTAL_VIDEO_PIXELS = 8_388_608
@@ -415,17 +417,7 @@ def pop_video_metadata(inputs: Any) -> Any:
 def build_messages(video: Any, prompt: str) -> list[dict[str, Any]]:
     """Build chat messages from a plain path or already decoded video."""
 
-    video_input = str(video.resolve()) if isinstance(video, Path) else video
-
-    return [
-        {
-            "role": "user",
-            "content": [
-                {"type": "video", "video": video_input},
-                {"type": "text", "text": prompt},
-            ],
-        }
-    ]
+    return Qwen3VLTransformersVideo.build_messages(video, prompt)
 
 
 def extract_keyframes(
@@ -539,13 +531,11 @@ def main() -> None:
     import torch
     import transformers
     import yaml
-    from transformers import AutoModelForImageTextToText, AutoProcessor
     from transformers.utils.hub import cached_file
     from transformers.video_utils import load_video
 
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is not available to PyTorch")
-    dtype = getattr(torch, args.dtype)
     transcript = (
         args.transcript.read_text(encoding="utf-8")
         if args.transcript is not None
@@ -559,21 +549,19 @@ def main() -> None:
     torch.cuda.reset_peak_memory_stats(args.device)
 
     load_start = time.perf_counter()
-    processor = AutoProcessor.from_pretrained(
+    tool = Qwen3VLTransformersVideo(
         args.model_id,
         revision=args.model_revision,
+        device=args.device,
+        dtype=args.dtype,
+        attention_implementation=args.attention_implementation,
     )
+    processor = tool.processor
+    model = tool.model
     processor.video_processor.size = {
         "longest_edge": args.max_total_video_pixels,
         "shortest_edge": args.min_total_video_pixels,
     }
-    model = AutoModelForImageTextToText.from_pretrained(
-        args.model_id,
-        revision=args.model_revision,
-        dtype=dtype,
-        attn_implementation=args.attention_implementation,
-    ).to(args.device)
-    model.eval()
     model_load_seconds = time.perf_counter() - load_start
 
     decode_start = time.perf_counter()
@@ -620,23 +608,15 @@ def main() -> None:
     video_grid_thw = json_safe(inputs.get("video_grid_thw"))
     grid = video_grid_thw[0]
     visual_tokens = math.prod(grid) // int(processor.video_processor.merge_size) ** 2
-    model_inputs = inputs.to(args.device)
-
     generation_start = time.perf_counter()
-    with torch.inference_mode():
-        generated_ids = model.generate(
-            **model_inputs,
-            max_new_tokens=args.max_new_tokens,
-            do_sample=False,
-        )
+    generated_ids = tool.generate(
+        inputs,
+        generation_options={"max_new_tokens": args.max_new_tokens},
+    )
     torch.cuda.synchronize(args.device)
     generation_seconds = time.perf_counter() - generation_start
     trimmed = generated_ids[:, input_tokens:]
-    response_text = processor.batch_decode(
-        trimmed,
-        skip_special_tokens=True,
-        clean_up_tokenization_spaces=False,
-    )[0]
+    response_text = tool.decode(generated_ids, input_tokens)
     output_tokens = int(trimmed.shape[-1])
     structured, parse_error = parse_json_response(response_text)
     reported_timestamps = (

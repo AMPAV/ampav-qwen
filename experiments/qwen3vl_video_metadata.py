@@ -21,7 +21,7 @@ from openvino import Core, Tensor, __version__ as openvino_version
 import openvino_genai
 import yaml
 
-from ampav.qwen3vl import Qwen3VLVideo
+from ampav.qwen.vl import Qwen3VLVideo
 
 
 DEFAULT_PROMPT = """Analyze this video for archival discovery and navigation.
