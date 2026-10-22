@@ -9,7 +9,7 @@ for supported Intel systems.
 
 ```python
 from ampav.qwen3vl import Qwen3VLTransformersVideo
-from ampav.qwen3omni import Qwen3OmniTransformers
+from ampav.qwen3omni import Qwen3OmniTransformers, Qwen3OmniVllm
 ```
 
 The public API remains under development.
@@ -27,6 +27,13 @@ Install the Qwen3-Omni media helpers when using native audiovisual input:
 
 ```bash
 python -m pip install -e ".[omni]"
+```
+
+Install the lightweight client dependency when connecting to a regular vLLM
+or vLLM-Omni OpenAI-compatible server:
+
+```bash
+python -m pip install -e ".[vllm-client]"
 ```
 
 Install OpenVINO only when selecting that Qwen3-VL runtime:

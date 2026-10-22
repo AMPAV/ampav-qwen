@@ -29,6 +29,9 @@ omni = [
 openvino = [
     "openvino-genai==2026.4.0.0",
 ]
+vllm-client = [
+    "openai>=2.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/AMPAV/ampav-qwen"
