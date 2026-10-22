@@ -19,7 +19,7 @@ import av
 import numpy as np
 import yaml
 
-from ampav.qwen.vl import Qwen3VLVideo
+from ampav.qwen3vl import Qwen3VLVideo
 
 
 DEFAULT_PROMPT = """Analyze this video for archival discovery and navigation.

@@ -3,13 +3,13 @@
 Qwen model tooling for the AMPAV environment.
 
 Native Transformers is the default runtime. Qwen3-VL and Qwen3-Omni have
-separate capability modules because their inputs and generation behavior
+separate packages because their inputs and generation behavior
 differ. OpenVINO GenAI is available as an explicitly selected Qwen3-VL option
 for supported Intel systems.
 
 ```python
-from ampav.qwen.vl import Qwen3VLTransformersVideo
-from ampav.qwen.omni import Qwen3OmniTransformers
+from ampav.qwen3vl import Qwen3VLTransformersVideo
+from ampav.qwen3omni import Qwen3OmniTransformers
 ```
 
 The public API remains under development.

@@ -16,7 +16,7 @@ import sys
 import time
 from typing import Any
 
-from ampav.qwen.omni import DEFAULT_MODEL_ID, Qwen3OmniTransformers
+from ampav.qwen3omni import DEFAULT_MODEL_ID, Qwen3OmniTransformers
 
 
 DEFAULT_PROMPT = """Analyze this media segment for archival discovery.

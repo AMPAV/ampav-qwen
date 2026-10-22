@@ -23,7 +23,7 @@ import sys
 import time
 from typing import Any
 
-from ampav.qwen.vl import Qwen3VLTransformersVideo
+from ampav.qwen3vl import Qwen3VLTransformersVideo
 
 
 DEFAULT_MODEL_ID = "Qwen/Qwen3-VL-4B-Instruct"

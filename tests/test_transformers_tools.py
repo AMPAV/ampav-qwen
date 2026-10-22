@@ -3,8 +3,8 @@
 from pathlib import Path
 import unittest
 
-from ampav.qwen.omni import Qwen3OmniTransformers
-from ampav.qwen.vl import Qwen3VLTransformersVideo
+from ampav.qwen3omni import Qwen3OmniTransformers
+from ampav.qwen3vl import Qwen3VLTransformersVideo
 
 
 class FakeBatch(dict):

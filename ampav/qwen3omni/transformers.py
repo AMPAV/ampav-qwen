@@ -7,10 +7,20 @@ from os import PathLike
 from pathlib import Path
 from typing import Any, Callable
 
-from .vl.transformers import _input_token_count, _trim_sequences
-
-
 DEFAULT_MODEL_ID = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
+
+
+def _input_token_count(inputs: Any) -> int:
+    input_ids = inputs["input_ids"]
+    shape = getattr(input_ids, "shape", None)
+    return int(shape[-1]) if shape is not None else len(input_ids[0])
+
+
+def _trim_sequences(sequences: Any, input_tokens: int) -> Any:
+    try:
+        return sequences[:, input_tokens:]
+    except TypeError:
+        return [sequence[input_tokens:] for sequence in sequences]
 
 
 class Qwen3OmniTransformers:

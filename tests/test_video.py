@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest import TestCase
 from unittest.mock import Mock
 
-from ampav.qwen.vl import Qwen3VLVideo
+from ampav.qwen3vl import Qwen3VLVideo
 
 
 class Qwen3VLVideoTest(TestCase):
