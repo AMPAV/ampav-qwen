@@ -1,5 +1,8 @@
 """Model-free tests for streamed vLLM experiment evidence."""
 
+from pathlib import Path
+import subprocess
+import sys
 from types import SimpleNamespace
 import unittest
 
@@ -54,6 +57,24 @@ class VllmExperimentTest(unittest.TestCase):
         rows = parse_gpu_rows("0, NVIDIA L4, 1200, 23034, 97\n")
         self.assertEqual(rows[0]["memory_used_mib"], 1200)
         self.assertEqual(rows[0]["utilization_percent"], 97)
+
+    def test_direct_script_entry_point_loads(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "experiments/qwen3_omni_vllm_metadata.py",
+                "--help",
+            ],
+            cwd=repo_root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("--runtime-label", completed.stdout)
 
 
 if __name__ == "__main__":

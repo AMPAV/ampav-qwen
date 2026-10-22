@@ -22,7 +22,14 @@ from ampav.qwen3omni import (
     DEFAULT_VLLM_MODEL_ID,
     Qwen3OmniVllm,
 )
-from experiments.qwen3_omni_audiovisual_metadata import DEFAULT_PROMPT
+try:
+    from experiments.qwen3_omni_audiovisual_metadata import DEFAULT_PROMPT
+except ModuleNotFoundError as error:
+    if error.name != "experiments":
+        raise
+    # Direct script execution puts this directory, rather than the repository
+    # root, on sys.path. Keep that documented invocation usable as well.
+    from qwen3_omni_audiovisual_metadata import DEFAULT_PROMPT
 
 MODES = {
     "text": None,
