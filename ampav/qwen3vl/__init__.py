@@ -1,7 +1,8 @@
-"""Qwen3-VL tools for AMPAV."""
+"""Qwen3-VL native runtime wrappers."""
 
 from ._version import __version__
-from .video import Qwen3VLVideo
+from .openvino import Qwen3VLVideo
+from .transformers import Qwen3VLTransformersVideo
 
 
-__all__ = ["__version__", "Qwen3VLVideo"]
+__all__ = ["__version__", "Qwen3VLTransformersVideo", "Qwen3VLVideo"]
